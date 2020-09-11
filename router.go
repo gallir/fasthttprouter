@@ -295,7 +295,7 @@ func (r *Router) Handler(ctx *fasthttp.RequestCtx) {
 	}
 
 	path := b2s(ctx.URI().PathOriginal()) // Avoid allocation a new string
-	method := string(ctx.Method())
+	method := b2s(ctx.Method())
 	if root := r.trees[method]; root != nil {
 		if f, tsr := root.getValue(path, ctx); f != nil {
 			f(ctx)
@@ -317,7 +317,7 @@ func (r *Router) Handler(ctx *fasthttp.RequestCtx) {
 				}
 
 				if len(ctx.URI().QueryString()) > 0 {
-					uri += "?" + string(ctx.QueryArgs().QueryString())
+					uri += "?" + b2s(ctx.QueryArgs().QueryString())
 				}
 
 				ctx.Redirect(uri, code)
