@@ -218,7 +218,8 @@ func (r *Router) Handle(method, path string, handle fasthttp.RequestHandler) {
 // "/etc/passwd" would be served.
 // Internally a http.FileServer is used, therefore http.NotFound is used instead
 // of the Router's NotFound handler.
-//     router.ServeFiles("/src/*filepath", "/var/www")
+//
+//	router.ServeFiles("/src/*filepath", "/var/www")
 func (r *Router) ServeFiles(path string, rootPath string) {
 	if len(path) < 10 || path[len(path)-10:] != "/*filepath" {
 		panic("path must end with /*filepath in path '" + path + "'")
@@ -386,5 +387,8 @@ func (r *Router) Handler(ctx *fasthttp.RequestCtx) {
 // Note it may break if string and/or slice header will change
 // in the future go versions.
 func b2s(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
+	if len(b) == 0 {
+		return ""
+	}
+	return unsafe.String(unsafe.SliceData(b), len(b))
 }
